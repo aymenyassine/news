@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: newsapp-mysql
+    environment:
+      MYSQL_DATABASE: news
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MYSQL_USER: ${DB_USERNAME:-newsapp}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--password=${DB_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: newsapp-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/news?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-newsapp}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-secret}
+      JWT_SECRET: ${JWT_SECRET:-nRIbi8NwAcUAWDMfFRWG79QV3TJt94vndglTgkdG6nv}
+      NEWS_API_KEY: ${NEWS_API_KEY:-your-newsapi-key}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@newsapp.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin@1234}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  mysqldata:

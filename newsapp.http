@@ -1,0 +1,606 @@
+### NewsApp API — Fichier de tests HTTP
+### Compatible VS Code REST Client / IntelliJ HTTP Client
+### Ordre recommande : Auth -> News -> Posts -> Favorites -> Users -> Admin
+
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+### ============================================================
+### VARIABLES — remplies automatiquement apres login
+### ============================================================
+@userToken = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJKZWFuIER1cG9udCIsInVzZXJJZCI6Miwic3ViIjoidXNlckBuZXdzYXBwLmNvbSIsImlhdCI6MTc3ODMzNTMxMCwiZXhwIjoxNzc4MzM4OTEwfQ.SougB1IZwRUfJP8JtoDwTan1z8GVz4RFbjMkx917bVg
+@adminToken = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJuYW1lIjoiQWRtaW5pc3RyYXRldXIiLCJ1c2VySWQiOjEsInN1YiI6ImFkbWluQG5ld3NhcHAuY29tIiwiaWF0IjoxNzc4MzM1MzcxLCJleHAiOjE3NzgzMzg5NzF9.qyOmEG81MfdC8E3haJU3vTMBoZsgKgHTX5ZRlxMjJoA
+# @refreshToken = eyJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoicmVmcmVzaCIsInN1YiI6InVzZXJAbmV3c2FwcC5jb20iLCJpYXQiOjE3NzgzMzUzMTAsImV4cCI6MTc3ODk0MDExMH0.2OnKn46_kiykApI2vuRlFyjzm91yM65pO2xCbrGVNZg
+@refreshToken = eyJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoicmVmcmVzaCIsInN1YiI6ImFkbWluQG5ld3NhcHAuY29tIiwiaWF0IjoxNzc4MzM1MzcxLCJleHAiOjE3Nzg5NDAxNzF9.DnJ2uhjSN_AxwcQW0ec9wHXufenb8dy8Pnopxx1Qtdw
+@favoriteId = 1
+@userId = 2
+
+
+
+### ============================================================
+### 1. AUTHENTIFICATION — /api/auth
+### ============================================================
+
+### 1.1 Inscription d'un nouvel utilisateur (role USER par defaut)
+# @name register
+POST {{baseUrl}}/api/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "user@newsapp.com",
+  "password": "User@1234",
+  "name": "Jean Dupont"
+}
+
+###
+
+### 1.2 Connexion utilisateur USER
+# @name loginUser
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "user@newsapp.com",
+  "password": "User@1234"
+}
+
+###
+
+### 1.3 Connexion administrateur ADMIN
+# @name loginAdmin
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@newsapp.com",
+  "password": "Admin@1234"
+}
+
+###
+
+### 1.4 Renouvellement du token (refresh)
+POST {{baseUrl}}/api/auth/refresh
+Authorization: Bearer {{refreshToken}}
+
+###
+
+### 1.5 Deconnexion (invalide le refresh token)
+POST {{baseUrl}}/api/auth/logout
+Authorization: Bearer {{userToken}}
+
+###
+
+### 1.6 Tentative de connexion avec un compte banni (doit retourner 403 ACCOUNT_BANNED)
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "banned@newsapp.com",
+  "password": "User@1234"
+}
+
+###
+
+### 1.7 Tentative de connexion avec mauvais mot de passe (doit retourner 401)
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "user@newsapp.com",
+  "password": "mauvais_mdp"
+}
+
+###
+
+### 1.8 Inscription avec email deja existant (doit retourner 400)
+POST {{baseUrl}}/api/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "user@newsapp.com",
+  "password": "User@1234",
+  "name": "Doublon"
+}
+
+###
+
+
+
+### ============================================================
+### 2. ACTUALITES — /api/news  (USER + ADMIN)
+### ============================================================
+
+### 2.1 Top headlines (France, toutes categories)
+GET {{baseUrl}}/api/news/headlines
+Authorization: Bearer {{userToken}}
+
+###
+
+### 2.2 Top headlines avec filtre pays et categorie
+GET {{baseUrl}}/api/news/headlines?country=us&category=technology&page=1&pageSize=10
+Authorization: Bearer {{userToken}}
+
+###
+
+### 2.3 Top headlines — categorie sport
+GET {{baseUrl}}/api/news/headlines?country=us&category=sports&pageSize=5
+Authorization: Bearer {{userToken}}
+
+###
+
+### 2.4 Recherche full-text
+GET {{baseUrl}}/api/news/search?q=intelligence+artificielle&language=us&sortBy=publishedAt&page=1&pageSize=10
+Authorization: Bearer {{userToken}}
+
+###
+
+### 2.5 Recherche avec filtre de date
+GET {{baseUrl}}/api/news/search?q=football&from=2025-01-01&sortBy=popularity&language=fr
+Authorization: Bearer {{userToken}}
+
+###
+
+### 2.6 Sources disponibles
+GET {{baseUrl}}/api/news/sources?country=us
+Authorization: Bearer {{userToken}}
+
+###
+
+### 2.7 Sources filtrees par categorie
+GET {{baseUrl}}/api/news/sources?category=technology&language=en
+Authorization: Bearer {{userToken}}
+
+###
+
+### 2.8 Liste des categories disponibles (statique)
+GET {{baseUrl}}/api/news/categories
+Authorization: Bearer {{userToken}}
+
+###
+
+### 2.9 Acces sans token (doit retourner 401)
+GET {{baseUrl}}/api/news/headlines
+
+###
+
+
+
+### ============================================================
+### 3. PUBLICATIONS — /api/posts  (USER + ADMIN)
+### ============================================================
+
+### 3.1 Feed public (sans authentification)
+GET {{baseUrl}}/api/posts
+
+###
+
+### 3.2 Feed public avec pagination
+GET {{baseUrl}}/api/posts?page=0&pageSize=5
+
+###
+
+### 3.3 Feed public filtre par categorie
+GET {{baseUrl}}/api/posts?category=technologie&page=0&pageSize=10
+
+###
+
+### 3.4 Detail d'un post (sans authentification)
+GET {{baseUrl}}/api/posts/{{postId}}
+
+###
+
+### 3.5 Mes posts (utilisateur connecte)
+GET {{baseUrl}}/api/posts/my
+Authorization: Bearer {{userToken}}
+
+###
+
+### 3.6 Creer un post (USER)
+# @name createPost
+POST {{baseUrl}}/api/posts
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "title": "Mon premier article sur l'IA",
+  "content": "L'intelligence artificielle transforme notre quotidien de maniere profonde et irreversible. Dans cet article, nous explorons les dernières avancees.",
+  "imageUrl": "https://example.com/image.jpg",
+  "category": "technologie"
+}
+
+###
+
+### 3.7 Creer un post (ADMIN)
+POST {{baseUrl}}/api/posts
+Content-Type: {{contentType}}
+Authorization: Bearer {{adminToken}}
+
+{
+  "title": "Article publie par l'administrateur",
+  "content": "Contenu de l'article administrateur avec suffisamment de texte pour passer la validation.",
+  "imageUrl": "https://example.com/admin-image.jpg",
+  "category": "general"
+}
+
+###
+
+### 3.8 Modifier son propre post (USER)
+PUT {{baseUrl}}/api/posts/{{postId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "title": "Mon article modifie sur l'IA",
+  "content": "Contenu mis a jour — l'intelligence artificielle continue de progresser rapidement dans tous les domaines.",
+  "imageUrl": "https://example.com/image-updated.jpg",
+  "category": "technologie"
+}
+
+###
+
+### 3.9 Modifier le post d'un autre utilisateur (USER — doit retourner 403)
+PUT {{baseUrl}}/api/posts/1
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "title": "Tentative de modification interdite",
+  "content": "Ce contenu ne devrait pas etre sauvegarde car l'utilisateur n'est pas l'auteur.",
+  "category": "test"
+}
+
+###
+
+### 3.10 Supprimer son propre post (USER — suppression physique)
+DELETE {{baseUrl}}/api/posts/{{postId}}
+Authorization: Bearer {{userToken}}
+
+###
+
+### 3.11 Supprimer le post d'un autre utilisateur (USER — doit retourner 403)
+DELETE {{baseUrl}}/api/posts/1
+Authorization: Bearer {{userToken}}
+
+###
+
+### 3.12 Supprimer un post en tant qu'ADMIN (passage en DELETED)
+DELETE {{baseUrl}}/api/posts/{{postId}}
+Authorization: Bearer {{adminToken}}
+
+###
+
+### 3.13 Signaler un post
+POST {{baseUrl}}/api/posts/{{postId}}/report
+Authorization: Bearer {{userToken}}
+
+###
+
+### 3.14 Creer un post sans token (doit retourner 401)
+POST {{baseUrl}}/api/posts
+Content-Type: {{contentType}}
+
+{
+  "title": "Post sans auth",
+  "content": "Ce post ne devrait pas etre cree.",
+  "category": "test"
+}
+
+###
+
+
+
+### ============================================================
+### 4. FAVORIS — /api/favorites  (USER + ADMIN)
+### ============================================================
+
+### 4.1 Lister mes favoris
+GET {{baseUrl}}/api/favorites
+Authorization: Bearer {{userToken}}
+
+###
+
+### 4.2 Ajouter un article aux favoris
+# @name addFavorite
+POST {{baseUrl}}/api/favorites
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "articleUrl": "https://www.lemonde.fr/article-exemple-123",
+  "title": "Exemple d'article Le Monde",
+  "description": "Description de l'article de test pour les favoris.",
+  "urlToImage": "https://www.lemonde.fr/image.jpg",
+  "sourceName": "Le Monde"
+}
+
+###
+
+### 4.3 Ajouter le meme article une deuxieme fois (doit retourner 400)
+POST {{baseUrl}}/api/favorites
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "articleUrl": "https://www.lemonde.fr/article-exemple-123",
+  "title": "Doublon favori",
+  "description": "Cet article est deja en favori.",
+  "sourceName": "Le Monde"
+}
+
+###
+
+### 4.4 Verifier si un article est en favori
+GET {{baseUrl}}/api/favorites/check?url=https://www.lemonde.fr/article-exemple-123
+Authorization: Bearer {{userToken}}
+
+###
+
+### 4.5 Verifier un article non en favori
+GET {{baseUrl}}/api/favorites/check?url=https://www.lefigaro.fr/article-inconnu
+Authorization: Bearer {{userToken}}
+
+###
+
+### 4.6 Supprimer un favori
+DELETE {{baseUrl}}/api/favorites/{{favoriteId}}
+Authorization: Bearer {{userToken}}
+
+###
+
+### 4.7 Supprimer un favori inexistant (doit retourner 404)
+DELETE {{baseUrl}}/api/favorites/99999
+Authorization: Bearer {{userToken}}
+
+###
+
+
+
+### ============================================================
+### 5. PROFIL UTILISATEUR — /api/users  (USER + ADMIN)
+### ============================================================
+
+### 5.1 Voir mon profil
+GET {{baseUrl}}/api/users/profile
+Authorization: Bearer {{userToken}}
+
+###
+
+### 5.2 Mettre a jour le profil
+PUT {{baseUrl}}/api/users/profile
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "name": "Jean Dupont Modifie",
+  "avatarUrl": "https://example.com/avatar.jpg",
+  "preferences": "{\"categories\":[\"technology\",\"science\"],\"country\":\"fr\",\"language\":\"fr\"}"
+}
+
+###
+
+### 5.3 Mettre a jour seulement le nom
+PUT {{baseUrl}}/api/users/profile
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "name": "Nouveau Nom"
+}
+
+###
+
+### 5.4 Voir l'historique de consultation
+GET {{baseUrl}}/api/users/history
+Authorization: Bearer {{userToken}}
+
+###
+
+### 5.5 Enregistrer un article dans l'historique
+POST {{baseUrl}}/api/users/history
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "articleUrl": "https://www.lemonde.fr/article-consulte-456",
+  "title": "Article consulte pour l'historique",
+  "sourceName": "Le Monde",
+  "urlToImage": "https://www.lemonde.fr/image2.jpg"
+}
+
+###
+
+### 5.6 Enregistrer un deuxieme article dans l'historique
+POST {{baseUrl}}/api/users/history
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "articleUrl": "https://www.lefigaro.fr/article-789",
+  "title": "Article Le Figaro",
+  "sourceName": "Le Figaro"
+}
+
+###
+
+### 5.7 Profil sans token (doit retourner 401)
+GET {{baseUrl}}/api/users/profile
+
+###
+
+
+
+### ============================================================
+### 6. ADMINISTRATION — /api/admin  (ADMIN uniquement)
+### ============================================================
+
+### 6.1 Statistiques globales
+GET {{baseUrl}}/api/admin/stats
+Authorization: Bearer {{adminToken}}
+
+###
+
+### --- Gestion des comptes ---
+
+### 6.2 Liste de tous les comptes (paginee)
+GET {{baseUrl}}/api/admin/users?page=0&size=10
+Authorization: Bearer {{adminToken}}
+
+###
+
+### 6.3 Liste avec filtre de recherche
+GET {{baseUrl}}/api/admin/users?search=jean&page=0&size=10
+Authorization: Bearer {{adminToken}}
+
+###
+
+### 6.4 Liste des comptes bannis uniquement
+GET {{baseUrl}}/api/admin/users?status=banned&page=0&size=10
+Authorization: Bearer {{adminToken}}
+
+###
+
+### 6.5 Liste des comptes actifs uniquement
+GET {{baseUrl}}/api/admin/users?status=active&page=0&size=10
+Authorization: Bearer {{adminToken}}
+
+###
+
+### 6.6 Profil complet d'un utilisateur
+GET {{baseUrl}}/api/admin/users/{{userId}}
+Authorization: Bearer {{adminToken}}
+
+###
+
+### 6.7 Bannir un utilisateur USER
+PUT {{baseUrl}}/api/admin/users/{{userId}}/ban
+Content-Type: {{contentType}}
+Authorization: Bearer {{adminToken}}
+
+{
+  "reason": "Violation des conditions d'utilisation — contenu inapproprie"
+}
+
+###
+
+### 6.8 Bannir sans raison (raison optionnelle)
+PUT {{baseUrl}}/api/admin/users/{{userId}}/ban
+Authorization: Bearer {{adminToken}}
+
+###
+
+### 6.9 Debannir un utilisateur
+PUT {{baseUrl}}/api/admin/users/{{userId}}/unban
+Authorization: Bearer {{adminToken}}
+
+###
+
+### 6.10 Tenter de se bannir soi-meme (ADMIN — doit retourner 400)
+PUT {{baseUrl}}/api/admin/users/1/ban
+Content-Type: {{contentType}}
+Authorization: Bearer {{adminToken}}
+
+{
+  "reason": "Auto-ban interdit"
+}
+
+###
+
+### 6.11 Tenter de bannir un autre ADMIN (doit retourner 400)
+PUT {{baseUrl}}/api/admin/users/1/ban
+Content-Type: {{contentType}}
+Authorization: Bearer {{adminToken}}
+
+{
+  "reason": "Ban admin interdit"
+}
+
+###
+
+### --- Gestion des publications ---
+
+### 6.12 Tous les posts (PUBLISHED + DELETED)
+GET {{baseUrl}}/api/admin/posts?page=0&size=10
+Authorization: Bearer {{adminToken}}
+
+###
+
+### 6.13 Posts filtres par statut PUBLISHED
+GET {{baseUrl}}/api/admin/posts?status=PUBLISHED&page=0&size=10
+Authorization: Bearer {{adminToken}}
+
+###
+
+### 6.14 Posts filtres par statut DELETED
+GET {{baseUrl}}/api/admin/posts?status=DELETED&page=0&size=10
+Authorization: Bearer {{adminToken}}
+
+###
+
+### 6.15 Posts signales uniquement
+GET {{baseUrl}}/api/admin/posts?reported=true&page=0&size=10
+Authorization: Bearer {{adminToken}}
+
+###
+
+### 6.16 Changer le statut d'un post en DELETED (masquer du feed)
+PUT {{baseUrl}}/api/admin/posts/{{postId}}/status
+Content-Type: {{contentType}}
+Authorization: Bearer {{adminToken}}
+
+{
+  "status": "DELETED"
+}
+
+###
+
+### 6.17 Restaurer un post (DELETED -> PUBLISHED)
+PUT {{baseUrl}}/api/admin/posts/{{postId}}/status
+Content-Type: {{contentType}}
+Authorization: Bearer {{adminToken}}
+
+{
+  "status": "PUBLISHED"
+}
+
+###
+
+### 6.18 Suppression definitive d'un post
+DELETE {{baseUrl}}/api/admin/posts/{{postId}}
+Authorization: Bearer {{adminToken}}
+
+###
+
+### --- Tests de securite RBAC ---
+
+### 6.19 Acces /api/admin avec token USER (doit retourner 403)
+GET {{baseUrl}}/api/admin/stats
+Authorization: Bearer {{userToken}}
+
+###
+
+### 6.20 Acces /api/admin sans token (doit retourner 401)
+GET {{baseUrl}}/api/admin/stats
+
+###
+
+### 6.21 Liste users avec token USER (doit retourner 403)
+GET {{baseUrl}}/api/admin/users
+Authorization: Bearer {{userToken}}
+
+###
+
+
+
+### ============================================================
+### 7. SWAGGER UI
+### ============================================================
+
+### 7.1 Documentation OpenAPI JSON
+GET {{baseUrl}}/api-docs
+
+###
+
+### 7.2 Swagger UI (ouvrir dans le navigateur)
+GET {{baseUrl}}/swagger-ui/index.html
+
+###
