@@ -14,10 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * Service JWT — generation, validation et extraction des claims.
- * Le role est encode dans les claims pour eviter un appel DB supplementaire.
- */
 @Service
 public class JwtService {
 
@@ -114,3 +110,4 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
+

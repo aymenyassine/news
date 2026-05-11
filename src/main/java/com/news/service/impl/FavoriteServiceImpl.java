@@ -15,9 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Implementation du service de gestion des favoris.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -89,3 +86,4 @@ public class FavoriteServiceImpl implements IFavoriteService {
                 .build();
     }
 }
+

@@ -22,13 +22,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Implementation du service de gestion des commentaires.
- * - Lecture publique (posts PUBLISHED uniquement).
- * - Ecriture reservee aux utilisateurs authentifies.
- * - Modification : auteur uniquement.
- * - Suppression : auteur ou ADMIN.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -123,3 +116,4 @@ public class CommentServiceImpl implements ICommentService {
                 .build();
     }
 }
+

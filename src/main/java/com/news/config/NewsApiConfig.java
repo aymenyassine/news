@@ -5,11 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
-/**
- * Configuration NewsAPI.org.
- * La cle API est stockee uniquement en variable d'environnement backend.
- * Elle n'est jamais transmise au frontend.
- */
 @Configuration
 public class NewsApiConfig {
 
@@ -32,3 +27,4 @@ public class NewsApiConfig {
         return new RestTemplate();
     }
 }
+

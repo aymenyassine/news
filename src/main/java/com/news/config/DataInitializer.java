@@ -10,11 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-/**
- * Initialisation du compte ADMIN par defaut au demarrage.
- * Le role ADMIN ne peut etre attribue que via ce DataInitializer
- * ou manuellement en base — jamais via l'API publique.
- */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -46,3 +41,4 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 }
+

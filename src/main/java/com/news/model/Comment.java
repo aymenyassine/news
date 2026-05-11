@@ -5,9 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-/**
- * Entite Comment — commentaire d'un utilisateur sur un post.
- */
 @Entity
 @Table(name = "comments")
 @Getter
@@ -47,3 +44,4 @@ public class Comment {
         updatedAt = LocalDateTime.now();
     }
 }
+

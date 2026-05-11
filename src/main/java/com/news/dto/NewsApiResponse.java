@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * Reponse paginee de NewsAPI.org.
- */
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,3 +17,4 @@ public class NewsApiResponse {
     private int totalResults;
     private List<ArticleDto> articles;
 }
+

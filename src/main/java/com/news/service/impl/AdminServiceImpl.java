@@ -26,10 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-/**
- * Implementation du service d'administration.
- * Toutes les actions admin sont loguees avec userId et timestamp.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -196,3 +192,4 @@ public class AdminServiceImpl implements IAdminService {
                 .build();
     }
 }
+

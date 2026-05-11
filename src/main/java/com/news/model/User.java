@@ -12,10 +12,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Entite utilisateur.
- * Implements UserDetails pour l'integration Spring Security.
- */
 @Entity
 @Table(name = "users")
 @Getter
@@ -52,7 +48,6 @@ public class User implements UserDetails {
 
     private LocalDateTime bannedAt;
 
-    /** Preferences JSON (categories, pays, langue) */
     @Column(columnDefinition = "TEXT")
     private String preferences;
 
@@ -103,3 +98,4 @@ public class User implements UserDetails {
         return !banned;
     }
 }
+

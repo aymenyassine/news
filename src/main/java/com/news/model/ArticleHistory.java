@@ -5,10 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-/**
- * Entite ArticleHistory — historique des articles consultes par un utilisateur.
- * Limite aux 50 derniers articles.
- */
 @Entity
 @Table(name = "article_history")
 @Getter
@@ -38,3 +34,4 @@ public class ArticleHistory {
     @Builder.Default
     private LocalDateTime viewedAt = LocalDateTime.now();
 }
+

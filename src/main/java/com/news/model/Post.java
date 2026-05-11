@@ -7,10 +7,6 @@ import java.time.LocalDateTime;
 
 import com.news.enums.PostStatus;
 
-/**
- * Entite Post — publication d'un utilisateur.
- * Independante de NewsAPI, stockee en base.
- */
 @Entity
 @Table(name = "posts")
 @Getter
@@ -52,7 +48,6 @@ public class Post {
 
     private LocalDateTime deletedAt;
 
-    /** ID de l'admin ayant supprime le post (null si supprime par l'auteur) */
     private Long deletedByAdminId;
 
     @PrePersist
@@ -66,3 +61,4 @@ public class Post {
         updatedAt = LocalDateTime.now();
     }
 }
+

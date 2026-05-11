@@ -16,11 +16,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
-/**
- * Implementation du service proxy NewsAPI.org.
- * Resultats mis en cache 15 minutes (Caffeine).
- * Gestion des erreurs : 401, 429, 500.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -143,3 +138,4 @@ public class NewsApiServiceImpl implements INewsApiService {
                 "Erreur NewsAPI : " + e.getMessage());
     }
 }
+

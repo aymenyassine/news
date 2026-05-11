@@ -4,7 +4,6 @@ import com.news.dto.CommentDto;
 import com.news.dto.CommentRequest;
 import com.news.model.User;
 import com.news.service.ICommentService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-/**
- * Controller des commentaires sur les posts.
- * GET /api/posts/{postId}/comments est public.
- * POST / PUT / DELETE necessitent une authentification.
- */
 @RestController
 @RequestMapping("/api/posts/{postId}/comments")
 @RequiredArgsConstructor
@@ -30,7 +24,7 @@ public class CommentController {
     private final ICommentService commentService;
 
     @GetMapping
-    @Operation(summary = "Commentaires d'un post", description = "Liste paginee des commentaires (public). Params: page, pageSize")
+    . Params: page, pageSize")
     public ResponseEntity<Page<CommentDto>> getComments(
             @PathVariable Long postId,
             @RequestParam(defaultValue = "0") int page,
@@ -39,7 +33,6 @@ public class CommentController {
     }
 
     @PostMapping
-    @Operation(summary = "Ajouter un commentaire", description = "Utilisateur authentifie uniquement")
     public ResponseEntity<CommentDto> addComment(
             @PathVariable Long postId,
             @Valid @RequestBody CommentRequest request,
@@ -49,7 +42,6 @@ public class CommentController {
     }
 
     @PutMapping("/{commentId}")
-    @Operation(summary = "Modifier un commentaire", description = "Auteur du commentaire uniquement")
     public ResponseEntity<CommentDto> updateComment(
             @PathVariable Long postId,
             @PathVariable Long commentId,
@@ -59,7 +51,6 @@ public class CommentController {
     }
 
     @DeleteMapping("/{commentId}")
-    @Operation(summary = "Supprimer un commentaire", description = "Auteur du commentaire ou ADMIN")
     public ResponseEntity<Map<String, String>> deleteComment(
             @PathVariable Long postId,
             @PathVariable Long commentId,
@@ -68,3 +59,5 @@ public class CommentController {
         return ResponseEntity.ok(Map.of("message", "Commentaire supprime avec succes"));
     }
 }
+
+

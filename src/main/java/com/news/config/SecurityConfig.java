@@ -25,10 +25,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-/**
- * Configuration Spring Security.
- * CORS + JWT stateless + @EnableMethodSecurity pour @PreAuthorize.
- */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -95,3 +91,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder(12);
     }
 }
+

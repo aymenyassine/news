@@ -7,7 +7,6 @@ import com.news.dto.PostDto;
 import com.news.dto.PostStatusRequest;
 import com.news.model.User;
 import com.news.service.IAdminService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-/**
- * Controller d'administration — ADMIN uniquement.
- * Tous les endpoints sont proteges par @PreAuthorize("hasRole('ADMIN')")
- * ET par la regle SecurityConfig .requestMatchers("/api/admin/**").hasRole("ADMIN").
- * Double protection : URL-level + method-level.
- */
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
@@ -37,8 +30,6 @@ public class AdminController {
     // ===== Statistiques =====
 
     @GetMapping("/stats")
-    @Operation(summary = "Statistiques globales",
-               description = "{ totalUsers, bannedUsers, totalPosts, reportedPosts }")
     public ResponseEntity<AdminStatsDto> getStats() {
         return ResponseEntity.ok(adminService.getStats());
     }
@@ -46,8 +37,6 @@ public class AdminController {
     // ===== Gestion des comptes =====
 
     @GetMapping("/users")
-    @Operation(summary = "Liste des comptes",
-               description = "Tableau pagine : email, nom, role, statut, date inscription")
     public ResponseEntity<Page<AdminUserDto>> listUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
@@ -57,15 +46,11 @@ public class AdminController {
     }
 
     @GetMapping("/users/{id}")
-    @Operation(summary = "Profil complet d'un utilisateur")
     public ResponseEntity<AdminUserDto> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(adminService.getUserById(id));
     }
 
     @PutMapping("/users/{id}/ban")
-    @Operation(summary = "Bannir un compte",
-               description = "Passe banned=true. Tokens actifs rejetes immediatement. " +
-                             "400 si ADMIN ou auto-ban.")
     public ResponseEntity<AdminUserDto> banUser(
             @PathVariable Long id,
             @RequestBody(required = false) BanRequest banRequest,
@@ -75,7 +60,6 @@ public class AdminController {
     }
 
     @PutMapping("/users/{id}/unban")
-    @Operation(summary = "Debannir un compte", description = "Passe banned=false")
     public ResponseEntity<AdminUserDto> unbanUser(
             @PathVariable Long id,
             @AuthenticationPrincipal User adminUser) {
@@ -85,9 +69,7 @@ public class AdminController {
     // ===== Gestion des publications =====
 
     @GetMapping("/posts")
-    @Operation(summary = "Tous les posts",
-               description = "Tableau : titre, auteur, date, statut, signalements. " +
-                             "Filtres : status (PUBLISHED/DELETED), reported (true/false)")
+    , reported (true/false)")
     public ResponseEntity<Page<PostDto>> listPosts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
@@ -97,7 +79,6 @@ public class AdminController {
     }
 
     @DeleteMapping("/posts/{id}")
-    @Operation(summary = "Suppression definitive d'un post")
     public ResponseEntity<Map<String, String>> deletePost(
             @PathVariable Long id,
             @AuthenticationPrincipal User adminUser) {
@@ -106,8 +87,6 @@ public class AdminController {
     }
 
     @PutMapping("/posts/{id}/status")
-    @Operation(summary = "Changer le statut d'un post",
-               description = "Body: { status: 'PUBLISHED' | 'DELETED' }")
     public ResponseEntity<PostDto> updatePostStatus(
             @PathVariable Long id,
             @Valid @RequestBody PostStatusRequest request,
@@ -115,3 +94,5 @@ public class AdminController {
         return ResponseEntity.ok(adminService.updatePostStatus(id, request, adminUser));
     }
 }
+
+

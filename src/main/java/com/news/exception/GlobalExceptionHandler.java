@@ -14,9 +14,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Gestionnaire global des exceptions — retourne des reponses JSON coherentes.
- */
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -77,3 +74,4 @@ public class GlobalExceptionHandler {
 
     public record ErrorResponse(String timestamp, int status, String message) {}
 }
+

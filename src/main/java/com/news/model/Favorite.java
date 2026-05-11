@@ -5,9 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-/**
- * Entite Favorite — article NewsAPI sauvegarde par un utilisateur.
- */
 @Entity
 @Table(name = "favorites",
         uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "article_url"}))
@@ -41,3 +38,4 @@ public class Favorite {
     @Builder.Default
     private LocalDateTime savedAt = LocalDateTime.now();
 }
+

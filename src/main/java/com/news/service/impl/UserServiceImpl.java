@@ -16,9 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Implementation du service de gestion du profil utilisateur et de l'historique.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -108,3 +105,4 @@ public class UserServiceImpl implements IUserService {
                 .build();
     }
 }
+

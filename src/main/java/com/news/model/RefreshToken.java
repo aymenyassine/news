@@ -5,10 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-/**
- * Entite RefreshToken — stocke les refresh tokens valides.
- * Permet l'invalidation lors du logout ou du ban.
- */
 @Entity
 @Table(name = "refresh_tokens")
 @Getter
@@ -42,3 +38,4 @@ public class RefreshToken {
         createdAt = LocalDateTime.now();
     }
 }
+

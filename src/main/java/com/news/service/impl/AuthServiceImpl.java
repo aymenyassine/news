@@ -24,9 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 
-/**
- * Implementation du service d'authentification.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -144,3 +141,4 @@ public class AuthServiceImpl implements IAuthService {
                 .build();
     }
 }
+

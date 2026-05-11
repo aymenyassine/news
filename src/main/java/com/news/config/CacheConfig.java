@@ -10,10 +10,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * Configuration du cache Caffeine.
- * TTL 15 minutes pour les resultats NewsAPI.
- */
 @Configuration
 @EnableCaching
 public class CacheConfig {
@@ -39,3 +35,4 @@ public class CacheConfig {
         return manager;
     }
 }
+

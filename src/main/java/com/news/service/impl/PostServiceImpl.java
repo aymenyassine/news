@@ -22,10 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-/**
- * Implementation du service de gestion des publications utilisateurs.
- * RBAC : USER gere ses propres posts, ADMIN gere tous les posts.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -164,3 +160,4 @@ public class PostServiceImpl implements IPostService {
         }
     }
 }
+

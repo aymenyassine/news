@@ -20,11 +20,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Map;
 
-/**
- * Filtre JWT — valide le token et verifie le statut banni a chaque requete.
- * CRITIQUE : la verification du bannissement se fait en base a chaque requete
- * pour garantir l'effet immediat du ban meme avec un token encore valide.
- */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -97,3 +92,4 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                        "message", "Votre compte a ete suspendu. Contactez l'administration."));
     }
 }
+
