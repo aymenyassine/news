@@ -1,0 +1,25 @@
+<div class="container" style="max-width: 400px; margin-top: 50px;">
+  <h2>Connexion</h2>
+  
+  <div *ngIf="errorMessage" class="error" style="margin-bottom: 15px;">
+    {{ errorMessage }}
+  </div>
+
+  <form (ngSubmit)="onSubmit()">
+    <div>
+      <label>Email</label>
+      <input type="email" name="email" [(ngModel)]="loginData.email" required>
+    </div>
+    
+    <div>
+      <label>Mot de passe</label>
+      <input type="password" name="password" [(ngModel)]="loginData.password" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="width: 100%;">Se connecter</button>
+  </form>
+
+  <p style="margin-top: 15px; text-align: center;">
+    Pas encore de compte ? <a routerLink="/register">S'inscrire</a>
+  </p>
+</div>

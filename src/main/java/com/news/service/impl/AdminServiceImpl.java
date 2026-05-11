@@ -33,6 +33,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class AdminServiceImpl implements IAdminService {
 
     private final UserRepository userRepository;

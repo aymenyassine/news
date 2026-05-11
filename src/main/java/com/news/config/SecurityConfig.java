@@ -52,8 +52,9 @@ public class SecurityConfig {
                                          "/api-docs/**", "/v3/api-docs/**").permitAll()
                         // Admin uniquement
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        // Feed public des posts (lecture seule sans auth)
-                        .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/{id}").permitAll()
+                        // Feed public des posts et commentaires (lecture seule sans auth)
+                        .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/{id}",
+                                         "/api/posts/{postId}/comments").permitAll()
                         // Tout le reste necessite une authentification
                         .anyRequest().authenticated()
                 )

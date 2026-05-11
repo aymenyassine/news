@@ -1,0 +1,10 @@
+.logo a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+}
+
+nav .active {
+  border-bottom: 2px solid white;
+}

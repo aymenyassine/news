@@ -1,0 +1,31 @@
+<div class="container">
+  <h1>Dernières Actualités</h1>
+
+  <div style="margin-bottom: 20px;">
+    <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="resetSearch()" placeholder="Rechercher un sujet...">
+    <button class="btn btn-primary" (click)="resetSearch()" style="margin-top: 10px;">Rechercher</button>
+  </div>
+
+  <div *ngIf="loading" style="text-align: center;">Chargement...</div>
+
+  <div *ngIf="!loading && articles.length === 0">Aucun article trouvé.</div>
+
+  <div class="articles-grid">
+    <div class="card" *ngFor="let article of articles">
+      <img *ngIf="article.urlToImage" [src]="article.urlToImage" style="width: 100%; height: 200px; object-fit: cover; border-radius: 4px;">
+      <h3>{{ article.title }}</h3>
+      <p>{{ article.description }}</p>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <small>{{ article.source.name }} - {{ article.publishedAt | date }}</small>
+        <a [href]="article.url" target="_blank" class="btn btn-primary">Lire plus</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="articles.length > 0" style="margin-top: 30px; display: flex; justify-content: center; align-items: center; gap: 20px;">
+    <button class="btn" [disabled]="currentPage === 1" (click)="prevPage()" [style.opacity]="currentPage === 1 ? 0.5 : 1">Précédent</button>
+    <span>Page {{ currentPage }}</span>
+    <button class="btn btn-primary" (click)="nextPage()">Suivant</button>
+  </div>
+</div>

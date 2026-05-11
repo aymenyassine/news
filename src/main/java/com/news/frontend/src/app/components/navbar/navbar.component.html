@@ -1,0 +1,20 @@
+<header>
+  <div class="logo">
+    <a routerLink="/">NewsApp</a>
+  </div>
+  <nav>
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Actualités</a>
+    <a routerLink="/blog" routerLinkActive="active">Blog</a>
+    
+    <ng-container *ngIf="authService.currentUser$ | async as user; else noUser">
+      <a *ngIf="user.role === 'ADMIN'" routerLink="/admin" routerLinkActive="active">Admin</a>
+      <a routerLink="/profile" routerLinkActive="active">Profil ({{ user.name }})</a>
+      <a href="javascript:void(0)" (click)="logout()">Déconnexion</a>
+    </ng-container>
+
+    <ng-template #noUser>
+      <a routerLink="/login" routerLinkActive="active">Connexion</a>
+      <a routerLink="/register" routerLinkActive="active">Inscription</a>
+    </ng-template>
+  </nav>
+</header>

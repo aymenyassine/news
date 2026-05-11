@@ -12,7 +12,7 @@ public class PostRequest {
     private String title;
 
     @NotBlank(message = "Le contenu est obligatoire")
-    @Size(min = 10, message = "Le contenu doit contenir au moins 10 caracteres")
+    @Size(min = 3, message = "Le contenu doit contenir au moins 3 caracteres")
     private String content;
 
     private String imageUrl;

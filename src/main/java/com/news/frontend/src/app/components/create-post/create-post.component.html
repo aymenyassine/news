@@ -1,0 +1,39 @@
+<div class="container" style="max-width: 600px; margin-top: 30px;">
+  <h2>Créer une nouvelle publication</h2>
+
+  <div *ngIf="errorMessage" class="error" style="margin-bottom: 15px;">
+    {{ errorMessage }}
+  </div>
+
+  <form (ngSubmit)="onSubmit()">
+    <div>
+      <label>Titre</label>
+      <input type="text" name="title" [(ngModel)]="postData.title" required placeholder="Titre de l'article">
+    </div>
+
+    <div>
+      <label>Catégorie</label>
+      <select name="category" [(ngModel)]="postData.category">
+        <option value="Général">Général</option>
+        <option value="Technologie">Technologie</option>
+        <option value="Sport">Sport</option>
+        <option value="Politique">Politique</option>
+      </select>
+    </div>
+
+    <div>
+      <label>URL de l'image (optionnel)</label>
+      <input type="text" name="imageUrl" [(ngModel)]="postData.imageUrl" placeholder="https://example.com/image.jpg">
+    </div>
+
+    <div>
+      <label>Contenu</label>
+      <textarea name="content" [(ngModel)]="postData.content" required rows="10" placeholder="Écrivez votre article ici..."></textarea>
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+      <button type="submit" class="btn btn-primary">Publier</button>
+      <button type="button" class="btn" (click)="cancel()">Annuler</button>
+    </div>
+  </form>
+</div>

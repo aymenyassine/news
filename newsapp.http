@@ -8,12 +8,11 @@
 ### ============================================================
 ### VARIABLES — remplies automatiquement apres login
 ### ============================================================
-@userToken = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJKZWFuIER1cG9udCIsInVzZXJJZCI6Miwic3ViIjoidXNlckBuZXdzYXBwLmNvbSIsImlhdCI6MTc3ODMzNTMxMCwiZXhwIjoxNzc4MzM4OTEwfQ.SougB1IZwRUfJP8JtoDwTan1z8GVz4RFbjMkx917bVg
-@adminToken = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJuYW1lIjoiQWRtaW5pc3RyYXRldXIiLCJ1c2VySWQiOjEsInN1YiI6ImFkbWluQG5ld3NhcHAuY29tIiwiaWF0IjoxNzc4MzM1MzcxLCJleHAiOjE3NzgzMzg5NzF9.qyOmEG81MfdC8E3haJU3vTMBoZsgKgHTX5ZRlxMjJoA
+@userToken = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJKZWFuIER1cG9udCIsInVzZXJJZCI6Miwic3ViIjoidXNlckBuZXdzYXBwLmNvbSIsImlhdCI6MTc3ODM0NDc0MCwiZXhwIjoxNzc4MzQ4MzQwfQ.oCqEP7Ow4mKpQ-xAq1TfAOnlUZ1AYL5Ww4KeQFixJVg
+@adminToken = eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJuYW1lIjoiQWRtaW5pc3RyYXRldXIiLCJ1c2VySWQiOjEsInN1YiI6ImFkbWluQG5ld3NhcHAuY29tIiwiaWF0IjoxNzc4MzQ0NDE3LCJleHAiOjE3NzgzNDgwMTd9.7isVgcvqiKbmq0rWfiwwstAy9INE00Q2PjV9_QYbviI
 # @refreshToken = eyJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoicmVmcmVzaCIsInN1YiI6InVzZXJAbmV3c2FwcC5jb20iLCJpYXQiOjE3NzgzMzUzMTAsImV4cCI6MTc3ODk0MDExMH0.2OnKn46_kiykApI2vuRlFyjzm91yM65pO2xCbrGVNZg
-@refreshToken = eyJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoicmVmcmVzaCIsInN1YiI6ImFkbWluQG5ld3NhcHAuY29tIiwiaWF0IjoxNzc4MzM1MzcxLCJleHAiOjE3Nzg5NDAxNzF9.DnJ2uhjSN_AxwcQW0ec9wHXufenb8dy8Pnopxx1Qtdw
-@favoriteId = 1
-@userId = 2
+@refreshToken = eyJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoicmVmcmVzaCIsInN1YiI6InVzZXJAbmV3c2FwcC5jb20iLCJpYXQiOjE3NzgzNDQ3NDAsImV4cCI6MTc3ODk0OTU0MH0.YgTWUr4fvQAtMFom0pDW-kxN2tpypl1wdHOnuoI_3WU
+@commentId = 1
 
 
 
@@ -290,7 +289,101 @@ Content-Type: {{contentType}}
 
 
 ### ============================================================
-### 4. FAVORIS — /api/favorites  (USER + ADMIN)
+### 4. COMMENTAIRES — /api/posts/{postId}/comments  (USER + ADMIN)
+### ============================================================
+
+### 4.1 Lister les commentaires d'un post (public, sans auth)
+GET {{baseUrl}}/api/posts/{{postId}}/comments
+
+###
+
+### 4.2 Lister les commentaires avec pagination
+GET {{baseUrl}}/api/posts/{{postId}}/comments?page=0&pageSize=10
+
+###
+
+### 4.3 Ajouter un commentaire (USER)
+# @name addComment
+POST {{baseUrl}}/api/posts/{{postId}}/comments
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "content": "Super article, merci pour le partage !"
+}
+
+###
+
+### 4.4 Ajouter un commentaire (ADMIN)
+POST {{baseUrl}}/api/posts/{{postId}}/comments
+Content-Type: {{contentType}}
+Authorization: Bearer {{adminToken}}
+
+{
+  "content": "Commentaire de l'administrateur."
+}
+
+###
+
+### 4.5 Modifier un commentaire (auteur uniquement)
+PUT {{baseUrl}}/api/posts/{{postId}}/comments/{{commentId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "content": "Commentaire modifie — tres bon article !"
+}
+
+###
+
+### 4.6 Modifier le commentaire d'un autre utilisateur (doit retourner 403)
+PUT {{baseUrl}}/api/posts/{{postId}}/comments/1
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "content": "Tentative de modification interdite"
+}
+
+###
+
+### 4.7 Supprimer son propre commentaire (USER)
+DELETE {{baseUrl}}/api/posts/{{postId}}/comments/{{commentId}}
+Authorization: Bearer {{userToken}}
+
+###
+
+### 4.8 Supprimer un commentaire en tant qu'ADMIN
+DELETE {{baseUrl}}/api/posts/{{postId}}/comments/{{commentId}}
+Authorization: Bearer {{adminToken}}
+
+###
+
+### 4.9 Ajouter un commentaire sans token (doit retourner 401)
+POST {{baseUrl}}/api/posts/{{postId}}/comments
+Content-Type: {{contentType}}
+
+{
+  "content": "Ce commentaire ne devrait pas etre cree."
+}
+
+###
+
+### 4.10 Commentaire vide (doit retourner 400)
+POST {{baseUrl}}/api/posts/{{postId}}/comments
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "content": ""
+}
+
+###
+
+
+
+### ============================================================
+### 5. FAVORIS — /api/favorites  (USER + ADMIN)
 ### ============================================================
 
 ### 4.1 Lister mes favoris
@@ -356,7 +449,7 @@ Authorization: Bearer {{userToken}}
 
 
 ### ============================================================
-### 5. PROFIL UTILISATEUR — /api/users  (USER + ADMIN)
+### 6. PROFIL UTILISATEUR — /api/users  (USER + ADMIN)
 ### ============================================================
 
 ### 5.1 Voir mon profil
@@ -430,7 +523,7 @@ GET {{baseUrl}}/api/users/profile
 
 
 ### ============================================================
-### 6. ADMINISTRATION — /api/admin  (ADMIN uniquement)
+### 7. ADMINISTRATION — /api/admin  (ADMIN uniquement)
 ### ============================================================
 
 ### 6.1 Statistiques globales
@@ -592,7 +685,7 @@ Authorization: Bearer {{userToken}}
 
 
 ### ============================================================
-### 7. SWAGGER UI
+### 8. SWAGGER UI
 ### ============================================================
 
 ### 7.1 Documentation OpenAPI JSON
